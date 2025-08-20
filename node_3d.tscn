@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://bpxtfoyk8ppgx"]
+
+[ext_resource type="ArrayMesh" uid="uid://cbpmqwcqa4561" path="res://blf_box.obj" id="1_a202f"]
+[ext_resource type="Script" uid="uid://bgo3in6v5tasa" path="res://main.gd" id="1_noarx"]
+[ext_resource type="ArrayMesh" uid="uid://c338ca84jt3c1" path="res://model/suzanne/suzanne.obj" id="3_r3fl7"]
+[ext_resource type="ArrayMesh" uid="uid://boofl2uv2n51i" path="res://model/t5_sphere/t5_sphere.obj" id="4_jka67"]
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_noarx")
+
+[node name="BlfBox" type="MeshInstance3D" parent="."]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 3.35497, 3.47174, 0.317946)
+mesh = ExtResource("1_a202f")
+
+[node name="BlfBox2" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.684407, 0, -0.7291, 0, 1, 0, 0.7291, 0, 0.684407, -4.76875, 1.12738, -0.758488)
+mesh = ExtResource("1_a202f")
+skeleton = NodePath("../BlfBox")
+
+[node name="BlfBox3" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6017, 2.5921, -1.13773)
+mesh = ExtResource("1_a202f")
+skeleton = NodePath("../BlfBox2")
+
+[node name="Suzanne" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.58553, 2.88383, 2.49215)
+mesh = ExtResource("3_r3fl7")
+
+[node name="defaultcamera" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.22262, 7.64663, 7.97678)
+mesh = ExtResource("4_jka67")
