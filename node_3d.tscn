@@ -29,3 +29,16 @@ mesh = ExtResource("3_r3fl7")
 [node name="defaultcamera" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.22262, 7.64663, 7.97678)
 mesh = ExtResource("4_jka67")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.72614, 0)
+light_energy = 2.829
+omni_range = 6.38441
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="."]
+omni_range = 6.59727
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 14.4542, 0)
+light_color = Color(0.86419, 0.744205, 0.67073, 1)
+light_energy = 5.876
