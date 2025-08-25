@@ -42,3 +42,11 @@ omni_range = 6.59727
 transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 14.4542, 0)
 light_color = Color(0.86419, 0.744205, 0.67073, 1)
 light_energy = 5.876
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+
+[node name="Node" type="Node" parent="."]
+metadata/Audio = null
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.2261, 1.43202, 0.172001)

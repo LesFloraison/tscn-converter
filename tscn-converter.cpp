@@ -194,6 +194,28 @@ int main()
                 std::string tmpLine = "{\"type\":\"directlight\",\"lightpos\":" + dirV3 + ",\"lightcolor\":" + colorV3 + "}";
                 std::cout << tmpLine << std::endl;
             }
+
+            if (line.find("type=\"Camera3D\"") != std::string::npos) {
+                std::vector<float> basis = { 1,1,1,1,1,1,1,1,1,1,1,1 };
+                while (line != "") {
+                    if (line.find("Transform3D(") != std::string::npos) {
+                        basis = std::vector<float>();
+                        line = line.substr(line.find("Transform3D(") + 12);
+                        line = line.substr(0, line.length() - 1) + ", ";
+                        while (line.find(", ") != std::string::npos) {
+                            basis.push_back(stof(line.substr(0, line.find(","))));
+                            line = line.substr(line.find(",") + 2);
+                        }
+                        std::vector<float> PRS = basisToPRS(basis);
+                        std::string positionV3 = "[" + std::to_string(PRS[0]) + "," + std::to_string(PRS[1]) + "," + std::to_string(PRS[2]) + "]";
+                        std::string rotationV3 = "[" + std::to_string(PRS[3]) + "," + std::to_string(PRS[4]) + "," + std::to_string(PRS[5]) + "]";
+                        std::string tmpLine = "{\"type\":defaultCamera,\"position\":" + positionV3 + ",\"rotation\":" + rotationV3 + "}";
+                        std::cout << tmpLine << std::endl;
+                    }
+                    std::getline(file, line);
+                }
+            }
+            //{"type":"defaultcamera","position":[0,0,0],"rotation":[22,80,0]}
         }
     }
     catch (const std::exception& e) {
