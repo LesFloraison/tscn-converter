@@ -19,7 +19,7 @@ std::string readFileToString(const std::string& filename) {
 }
 
 std::map<std::string, int> idMap;
-std::vector<std::string> pathArray;
+std::map<std::string, std::string> audioPathMap;
 
 double rad_to_deg(double radians) {
     return radians * 180.0 / PI;
@@ -80,9 +80,15 @@ int main()
             if (line.find("ext_resource type=\"ArrayMesh\"") != std::string::npos) {
                 std::string path = (line.substr(line.find("path=\"") + 6, line.find("\" id=") - line.find("path=\"") - 6)).substr(6);
                 std::string id = line.substr(line.find("\" id=") + 6, line.length()- line.find("\" id=") - 8);
-                idMap[id] = idMap.size();
-                std::string tmpline = "{\"path\":\"" + path + "\",\"index\":" + std::to_string(idMap[id] - 1) +"}";
+                idMap[id] = idMap.size() - 1;
+                std::string tmpline = "{\"path\":\"" + path + "\",\"index\":" + std::to_string(idMap[id]) +"}";
                 std::cout << tmpline << std::endl;
+            }
+
+            if (line.find("ext_resource type=\"AudioStream\"") != std::string::npos) {
+                std::string path = (line.substr(line.find("path=\"") + 6, line.find("\" id=") - line.find("path=\"") - 6)).substr(6);
+                std::string id = line.substr(line.find("\" id=") + 6, line.length() - line.find("\" id=") - 8);
+                audioPathMap[id] = path;
             }
 
             if (line.find("type=\"MeshInstance3D\"") != std::string::npos) {
@@ -215,7 +221,52 @@ int main()
                     std::getline(file, line);
                 }
             }
-            //{"type":"defaultcamera","position":[0,0,0],"rotation":[22,80,0]}
+            
+            if (line.find("type=\"AudioStreamPlayer3D\"") != std::string::npos) {
+                std::string path;
+                std::string positionV3 = "[0,0,0]";
+                std::string axisfollowingV3 = "[0,0,0]";
+                std::string looping = "1";
+                while (line != "") {
+                    if (line.find("stream =") != std::string::npos) {
+                        line = line.substr(line.find("ExtResource(\"") + 13);
+                        std::string id = line.substr(0, line.length() - 2);
+                        path = audioPathMap[id];
+                    }
+
+                    if (line.find("transform =") != std::string::npos) {
+                        std::vector<float> basis;
+                        line = line.substr(line.find("Transform3D(") + 12);
+                        line = line.substr(0, line.length() - 1) + ", ";
+                        while (line.find(", ") != std::string::npos) {
+                            basis.push_back(stof(line.substr(0, line.find(","))));
+                            line = line.substr(line.find(",") + 2);
+                        }
+                        std::vector<float> PRS = basisToPRS(basis);
+                        positionV3 = "[" + std::to_string(PRS[0]) + "," + std::to_string(PRS[1]) + "," + std::to_string(PRS[2]) + "]";
+                    }
+
+                    if (line.find("metadata/axisfollowing =") != std::string::npos) {
+                        line = line.substr(line.find("(") + 1);
+                        line = line.substr(0, line.length() - 1) + ", ";
+                        std::vector<int> axisfollowing;
+                        while (line.find(", ") != std::string::npos) {
+                            axisfollowing.push_back(stoi(line.substr(0, line.find(","))));
+                            line = line.substr(line.find(",") + 2);
+                        }
+                        axisfollowingV3 = "[" + std::to_string(axisfollowing[0]) + "," + std::to_string(axisfollowing[1]) + "," + std::to_string(axisfollowing[2]) + "]";
+                    }
+
+                    if (line.find("metadata/looping = false") != std::string::npos) {
+                        looping = "0";
+                    }
+                    std::getline(file, line);
+                }
+                if (path != "") {
+                    std::string tmpLine = "{\"type\":audio,\"path\":" + path + ",\"position\":" + positionV3 + ",\"axisfollowing\":" + axisfollowingV3 + ",\"looping\":" + looping + "}";
+                    std::cout << tmpLine << std::endl;
+                }
+            }
         }
     }
     catch (const std::exception& e) {

@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://bpxtfoyk8ppgx"]
+[gd_scene load_steps=6 format=3 uid="uid://bpxtfoyk8ppgx"]
 
 [ext_resource type="ArrayMesh" uid="uid://cbpmqwcqa4561" path="res://blf_box.obj" id="1_a202f"]
 [ext_resource type="Script" uid="uid://bgo3in6v5tasa" path="res://main.gd" id="1_noarx"]
 [ext_resource type="ArrayMesh" uid="uid://c338ca84jt3c1" path="res://model/suzanne/suzanne.obj" id="3_r3fl7"]
 [ext_resource type="ArrayMesh" uid="uid://boofl2uv2n51i" path="res://model/t5_sphere/t5_sphere.obj" id="4_jka67"]
+[ext_resource type="AudioStream" uid="uid://ornx644yuxc3" path="res://water.wav" id="5_jka67"]
 
 [node name="Node3D" type="Node3D"]
 script = ExtResource("1_noarx")
@@ -44,9 +45,13 @@ light_color = Color(0.86419, 0.744205, 0.67073, 1)
 light_energy = 5.876
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.35281, 0)
+stream = ExtResource("5_jka67")
+autoplay = true
+metadata/looping = true
+metadata/axisfollowing = Vector3i(1, 1, 1)
 
 [node name="Node" type="Node" parent="."]
-metadata/Audio = null
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.2261, 1.43202, 0.172001)
