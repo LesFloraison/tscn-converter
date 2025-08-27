@@ -26,6 +26,7 @@ skeleton = NodePath("../BlfBox2")
 [node name="Suzanne" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.58553, 2.88383, 2.49215)
 mesh = ExtResource("3_r3fl7")
+metadata/roughness = 0.5
 
 [node name="defaultcamera" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.22262, 7.64663, 7.97678)

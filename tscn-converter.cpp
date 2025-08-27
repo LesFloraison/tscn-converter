@@ -92,26 +92,37 @@ int main()
             }
 
             if (line.find("type=\"MeshInstance3D\"") != std::string::npos) {
-                std::getline(file, line);
-                if (line.find("transform =") != std::string::npos) {
-                    std::vector<float> basis;
-                    line = line.substr(line.find("Transform3D(") + 12);
-                    line = line.substr(0, line.length() - 1) + ", ";
-                    while (line.find(", ") != std::string::npos) {
-                        basis.push_back(stof(line.substr(0, line.find(","))));
-                        line = line.substr(line.find(",") + 2);
+                std::string positionV3 = "[0,0,0]";
+                std::string rotationV3 = "[0,0,0]";
+                std::string scaleV3 = "[0,0,0]";
+                std::string roughness = "1.00";
+                int index = 0;
+                while (line != "") {
+                    if (line.find("transform =") != std::string::npos) {
+                        std::vector<float> basis;
+                        line = line.substr(line.find("Transform3D(") + 12);
+                        line = line.substr(0, line.length() - 1) + ", ";
+                        while (line.find(", ") != std::string::npos) {
+                            basis.push_back(stof(line.substr(0, line.find(","))));
+                            line = line.substr(line.find(",") + 2);
+                        }
+                        std::vector<float> PRS = basisToPRS(basis);
+                        positionV3 = "[" + std::to_string(PRS[0]) + "," + std::to_string(PRS[1]) + "," + std::to_string(PRS[2]) + "]";
+                        rotationV3 = "[" + std::to_string(PRS[3]) + "," + std::to_string(PRS[4]) + "," + std::to_string(PRS[5]) + "]";
+                        scaleV3 = "[" + std::to_string(PRS[6]) + "," + std::to_string(PRS[7]) + "," + std::to_string(PRS[8]) + "]";
+                        
                     }
-                    std::vector<float> PRS = basisToPRS(basis);
+                    if (line.find("mesh =") != std::string::npos) {
+                        std::string id = line.substr(line.find("(\"") + 2, line.find("\")") - line.find("(\"") - 2);
+                        index = idMap[id];
+                    }
+                    if (line.find("metadata/roughness =") != std::string::npos) {
+                        roughness = line.substr(line.find("= ") + 2);
+                    }
                     std::getline(file, line);
-                    std::string id = line.substr(line.find("(\"") + 2, line.find("\")") - line.find("(\"") - 2);
-                    int index = idMap[id];
-                    std::string positionV3 = "[" + std::to_string(PRS[0]) + "," + std::to_string(PRS[1]) + "," + std::to_string(PRS[2]) + "]";
-                    std::string rotationV3 = "[" + std::to_string(PRS[3]) + "," + std::to_string(PRS[4]) + "," + std::to_string(PRS[5]) + "]";
-                    std::string scaleV3 = "[" + std::to_string(PRS[6]) + "," + std::to_string(PRS[7]) + "," + std::to_string(PRS[8]) + "]";
-                    std::string roughness = "1.00";
-                    std::string tmpLine = "{\"obj\":" + std::to_string(index) + ",\"position\":" + positionV3 + ",\"rotate\":" + rotationV3 + ",\"scale\":" + scaleV3 + ",\"roughness\":" + roughness + "}";
-                    std::cout << tmpLine << std::endl;
                 }
+                std::string tmpLine = "{\"obj\":" + std::to_string(index) + ",\"position\":" + positionV3 + ",\"rotation\":" + rotationV3 + ",\"scale\":" + scaleV3 + ",\"roughness\":" + roughness + "}";
+                std::cout << tmpLine << std::endl;
             }
 
             if (line.find("type=\"OmniLight3D\"") != std::string::npos) {
