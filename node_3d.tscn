@@ -1,10 +1,12 @@
-[gd_scene load_steps=6 format=3 uid="uid://bpxtfoyk8ppgx"]
+[gd_scene load_steps=7 format=3 uid="uid://bpxtfoyk8ppgx"]
 
 [ext_resource type="ArrayMesh" uid="uid://cbpmqwcqa4561" path="res://blf_box.obj" id="1_a202f"]
 [ext_resource type="Script" uid="uid://bgo3in6v5tasa" path="res://main.gd" id="1_noarx"]
 [ext_resource type="ArrayMesh" uid="uid://c338ca84jt3c1" path="res://model/suzanne/suzanne.obj" id="3_r3fl7"]
 [ext_resource type="ArrayMesh" uid="uid://boofl2uv2n51i" path="res://model/t5_sphere/t5_sphere.obj" id="4_jka67"]
 [ext_resource type="AudioStream" uid="uid://ornx644yuxc3" path="res://water.wav" id="5_jka67"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_jka67"]
 
 [node name="Node3D" type="Node3D"]
 script = ExtResource("1_noarx")
@@ -56,3 +58,11 @@ metadata/axisfollowing = Vector3i(1, 1, 1)
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.2261, 1.43202, 0.172001)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.54808, 0, 0, 0, 1, 0, 0, 0, 1.73813, 0, 0, 0)
+mesh = SubResource("PlaneMesh_jka67")
+metadata/warpscale_1 = 3.0
+metadata/warpscale_2 = 7.0
+metadata/flow_1 = Vector2(0.185, 0.17)
+metadata/flow_2 = Vector2(0.225, 0.155)

@@ -96,6 +96,13 @@ int main()
                 std::string rotationV3 = "[0,0,0]";
                 std::string scaleV3 = "[0,0,0]";
                 std::string roughness = "1.00";
+
+                std::string scaleV2 = "[0,0]";
+                std::string warpscale_1 = "0";
+                std::string warpscale_2 = "0";
+                std::string flow_1V2 = "[0,0]";
+                std::string flow_2V2 = "[0,0]";
+                bool isWater = false;
                 int index = 0;
                 while (line != "") {
                     if (line.find("transform =") != std::string::npos) {
@@ -110,19 +117,59 @@ int main()
                         positionV3 = "[" + std::to_string(PRS[0]) + "," + std::to_string(PRS[1]) + "," + std::to_string(PRS[2]) + "]";
                         rotationV3 = "[" + std::to_string(PRS[3]) + "," + std::to_string(PRS[4]) + "," + std::to_string(PRS[5]) + "]";
                         scaleV3 = "[" + std::to_string(PRS[6]) + "," + std::to_string(PRS[7]) + "," + std::to_string(PRS[8]) + "]";
-                        
+
+                        scaleV2 = "[" + std::to_string(PRS[6]) + "," + std::to_string(PRS[8]) + "]";
                     }
-                    if (line.find("mesh =") != std::string::npos) {
+                    if (line.find("mesh = ExtResource") != std::string::npos) {
                         std::string id = line.substr(line.find("(\"") + 2, line.find("\")") - line.find("(\"") - 2);
                         index = idMap[id];
                     }
                     if (line.find("metadata/roughness =") != std::string::npos) {
                         roughness = line.substr(line.find("= ") + 2);
                     }
+                    if (line.find("SubResource(\"PlaneMesh") != std::string::npos) {
+                        isWater = true;
+                    }
+                    if (line.find("metadata/flow_1 =") != std::string::npos) {
+                        line = line.substr(line.find("(") + 1);
+                        line = line.substr(0, line.length() - 1) + ", ";
+                        std::vector<float> flow_1;
+                        while (line.find(", ") != std::string::npos) {
+                            flow_1.push_back(stof(line.substr(0, line.find(","))));
+                            line = line.substr(line.find(",") + 2);
+                        }
+                        flow_1V2 = "[" + std::to_string(flow_1[0]) + "," + std::to_string(flow_1[1]) + "]";
+                    }
+                    if (line.find("metadata/flow_2 =") != std::string::npos) {
+                        line = line.substr(line.find("(") + 1);
+                        line = line.substr(0, line.length() - 1) + ", ";
+                        std::vector<float> flow_2;
+                        while (line.find(", ") != std::string::npos) {
+                            flow_2.push_back(stof(line.substr(0, line.find(","))));
+                            line = line.substr(line.find(",") + 2);
+                        }
+                        flow_2V2 = "[" + std::to_string(flow_2[0]) + "," + std::to_string(flow_2[1]) + "]";
+                    }
+                    if (line.find("metadata/warpscale_1 =") != std::string::npos) {
+                        line = line.substr(line.find("(") + 1);
+                        warpscale_1 = line.substr(line.find("metadata/warpscale_1 =") + 23);
+                    }
+                    if (line.find("metadata/warpscale_2 =") != std::string::npos) {
+                        line = line.substr(line.find("(") + 1);
+                        warpscale_2 = line.substr(line.find("metadata/warpscale_2 =") + 23);
+                    }
                     std::getline(file, line);
                 }
-                std::string tmpLine = "{\"obj\":" + std::to_string(index) + ",\"position\":" + positionV3 + ",\"rotation\":" + rotationV3 + ",\"scale\":" + scaleV3 + ",\"roughness\":" + roughness + "}";
-                std::cout << tmpLine << std::endl;
+                if (!isWater) {
+                    std::string tmpLine = "{\"obj\":" + std::to_string(index) + ",\"position\":" + positionV3 + ",\"rotation\":" + rotationV3 + ",\"scale\":" + scaleV3 + ",\"roughness\":" + roughness + "}";
+                    std::cout << tmpLine << std::endl;
+                }
+                else {
+                    //{"type":"waterlayer","position":[0,1.5,0],"scale":[200,200],"warpscale_1":2,"warpscale_2":6,"flow_1":[0.5,0.5],"flow_2":[-0.17,-0.17]}
+                    std::string tmpLine = "{\"type\":\"waterlayer\",\"position\":" + positionV3 + ",\"scale\":" + scaleV2 + ",\"warpscale_1\":" + warpscale_1 + ",\"warpscale_2\":" + warpscale_2 + ",\"flow_1:\":" + flow_1V2 + ",\"flow_2:\":" + flow_2V2 + "}";
+                    std::cout << tmpLine << std::endl;
+                }
+                
             }
 
             if (line.find("type=\"OmniLight3D\"") != std::string::npos) {
